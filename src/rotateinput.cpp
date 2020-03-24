@@ -33,7 +33,7 @@ struct InputProperty {
   Atom type;
   int format;
   QString name;
-  
+
   bool isRotationMatrix() const;
   void setRotationMatrix(const vector<float> &matrix);
 };
@@ -85,7 +85,7 @@ InputProperty::InputProperty(int deviceId, Display* display, Atom atom) : device
   XFree(name_c);
   Atom property_type;
   int property_format;
-  uint64_t items_count, bytes_after;
+  unsigned long int items_count, bytes_after;
   uint8_t *data;
   if(XIGetProperty(display, deviceId, atom, 0, 0, False, AnyPropertyType, &property_type, &property_format, &items_count, &bytes_after, &data) == Success) {
     type = property_type;
@@ -136,7 +136,7 @@ RotateInput::RotateInput(QObject* parent) : QObject{parent}, d{new Private}
       d->devices.push_back(device);
   }
   XIFreeDeviceInfo(deviceInfo);
-  
+
   for(auto device: d->devices) {
     for(auto property: device.properties()) {
       qDebug() << "Device" << device.name << ", property:" << property.name << ", atom=" << property.atom << ", type: " << property.type;
@@ -151,10 +151,10 @@ void RotateInput::rotate(Orientation orientation)
 {
 #ifdef USE_XINPUT
   static QHash<Orientation, QStringList>  orientation_matrix_map {
-    {TopUp, {"1", "0", "0", "0", "1", "0", "0", "0", "1"}},
-    {TopDown, {"-1", "0", "1", "0", "-1", "1", "0", "0", "1"}},
-    {LeftUp, {"0", "-1", "1", "1", "0", "0", "0", "0", "1"}},
-    {RightUp, {"0", "1", "0", "-1", "0", "1", "0", "0", "1"}},
+    {TopUp, {"0", "-1", "1", "1", "0", "0", "0", "0", "1"}},
+    {TopDown, {"0", "1", "0", "-1", "0", "1", "0", "0", "1"}},
+    {LeftUp, {"-1", "0", "1", "0", "-1", "1", "0", "0", "1"}},
+    {RightUp, {"1", "0", "0", "0", "1", "0", "0", "0", "1"}}
   };
   auto orientation_matrix = orientation_matrix_map[orientation];
   for(auto device: d->devices) {
@@ -162,10 +162,10 @@ void RotateInput::rotate(Orientation orientation)
   }
 #else
   static QHash<Orientation, vector<float>>  orientation_matrix_map {
-    {TopUp, {1, 0, 0, 0, 1, 0, 0, 0, 1}},
-    {TopDown, {-1, 0, 1, 0, -1, 1, 0, 0, 1}},
-    {LeftUp, {0, -1, 1, 1, 0, 0, 0, 0, 1}},
-    {RightUp, {0, 1, 0, -1, 0, 1, 0, 0, 1}},
+    {TopUp, {0, -1, 1, 1, 0, 0, 0, 0, 1}},
+    {TopDown, {0, 1, 0, -1, 0, 1, 0, 0, 1}},
+    {LeftUp, {-1, 0, 1, 0, -1, 1, 0, 0, 1}},
+    {RightUp, {1, 0, 0, 0, 1, 0, 0, 0, 1}}
   };
   auto orientation_matrix = orientation_matrix_map[orientation];
   qDebug() << "Setting rotation matrix: " << orientation_matrix;
