@@ -85,7 +85,7 @@ InputProperty::InputProperty(int deviceId, Display* display, Atom atom) : device
   XFree(name_c);
   Atom property_type;
   int property_format;
-  uint64_t items_count, bytes_after;
+  unsigned long int items_count, bytes_after;
   uint8_t *data;
   if(XIGetProperty(display, deviceId, atom, 0, 0, False, AnyPropertyType, &property_type, &property_format, &items_count, &bytes_after, &data) == Success) {
     type = property_type;
